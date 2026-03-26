@@ -20,12 +20,22 @@
 						<div class="text-center">
 							<img src="{{ asset('assets/img/avatars/avatar.jpg') }}" alt="Logo" class="img-fluid rounded-circle" width="132" height="132" />
 						</div>
-						<form action="{{ url('/dashboard') }}" method="GET">
-                            <!-- Sementara redirect GET to /dashboard for testing layout -->
+						<form action="{{ route('login') }}" method="POST">
                             @csrf
+
+                            @if ($errors->any())
+                                <div class="alert alert-danger p-2 mb-3">
+                                    <ul class="mb-0">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+
 							<div class="mb-3">
 								<label class="form-label">Email</label>
-								<input class="form-control form-control-lg" type="email" name="email" placeholder="Enter your email" required />
+								<input class="form-control form-control-lg" type="email" name="email" value="{{ old('email') }}" placeholder="Enter your email" required />
 							</div>
 							<div class="mb-3">
 								<label class="form-label">Password</label>

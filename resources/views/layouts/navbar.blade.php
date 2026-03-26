@@ -18,7 +18,10 @@
 					<div class="dropdown-divider"></div>
 					<a class="dropdown-item" href="{{ url('/settings') }}"><i class="align-middle me-1" data-feather="settings"></i> Settings & Privacy</a>
 					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="{{ url('/logout') }}">Log out</a>
+					<form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="dropdown-item">Log out</button>
+                    </form>
 				</div>
 			</li>
 		</ul>
