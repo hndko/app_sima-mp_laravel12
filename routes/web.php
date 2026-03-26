@@ -13,9 +13,7 @@ Route::post('/login', [AuthController::class, 'loginAction']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function() {
-    Route::get('/dashboard', function () {
-        return view('backend.dashboard.index');
-    })->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('karyawan', \App\Http\Controllers\KaryawanController::class);
     Route::resource('klien', \App\Http\Controllers\KlienController::class);
@@ -27,5 +25,7 @@ Route::middleware('auth')->group(function() {
 
     Route::resource('keuangan', \App\Http\Controllers\KeuanganController::class)->except(['show']);
     Route::resource('kas-rekening', \App\Http\Controllers\KasRekeningController::class)->except(['show']);
-    Route::resource('hutang-piutang', \App\Http\Controllers\HutangPiutangController::class)->except(['show']);
+    Route::resource('hutang-piutang', \App\Http\Controllers\HutangPiutangController::class);
+
+    Route::get('/riwayat-stok', [\App\Http\Controllers\RiwayatStokController::class, 'index'])->name('riwayat-stok.index');
 });

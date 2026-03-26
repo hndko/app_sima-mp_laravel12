@@ -22,7 +22,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <h1 class="mt-1 mb-3">14</h1>
+                            <h1 class="mt-1 mb-3">{{ $totalKaryawan }}</h1>
                             <div class="mb-0">
                                 <span class="text-muted">Orang terdaftar</span>
                             </div>
@@ -40,7 +40,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <h1 class="mt-1 mb-3">5</h1>
+                            <h1 class="mt-1 mb-3">{{ $proyekAktif }}</h1>
                             <div class="mb-0">
                                 <span class="text-muted">Sedang berjalan</span>
                             </div>
@@ -60,7 +60,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <h1 class="mt-1 mb-3">Rp 21M</h1>
+                            <h1 class="mt-1 mb-3">Rp {{ number_format($saldoBank / 1000000, 0, ',', '.') }}M</h1>
                             <div class="mb-0">
                                 <span class="text-muted">Kas Rekening</span>
                             </div>
@@ -78,7 +78,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <h1 class="mt-1 mb-3">64</h1>
+                            <h1 class="mt-1 mb-3">{{ $totalItemStok }}</h1>
                             <div class="mb-0">
                                 <span class="text-muted">Item bahan baku</span>
                             </div>
@@ -92,7 +92,7 @@
     <div class="col-xl-6 col-xxl-7">
         <div class="card flex-fill w-100">
             <div class="card-header">
-                <h5 class="card-title mb-0">Overview Arus Kas</h5>
+                <h5 class="card-title mb-0">Overview Arus Kas {{ date('Y') }}</h5>
             </div>
             <div class="card-body py-3">
                 <div class="chart chart-sm">
@@ -112,30 +112,61 @@
             <table class="table table-hover my-0">
                 <thead>
                     <tr>
-                        <th>Nama Proyek</th>
+                        <th>Kode</th>
+                        <th>Uraian Proyek</th>
                         <th class="d-none d-xl-table-cell">Mulai</th>
-                        <th class="d-none d-xl-table-cell">Selesai</th>
                         <th>Status</th>
                         <th class="d-none d-md-table-cell">Klien</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @forelse($proyekTerbaru as $proyek)
                     <tr>
-                        <td>Renovasi Gedung A</td>
-                        <td class="d-none d-xl-table-cell">01/01/2026</td>
-                        <td class="d-none d-xl-table-cell">31/06/2026</td>
-                        <td><span class="badge bg-success">Selesai</span></td>
-                        <td class="d-none d-md-table-cell">PT Alpha</td>
+                        <td><a href="{{ route('proyek.show', $proyek->id) }}">{{ $proyek->kode_proyek }}</a></td>
+                        <td>{{ \Illuminate\Support\Str::limit($proyek->uraian, 25) }}</td>
+                        <td class="d-none d-xl-table-cell">{{ \Carbon\Carbon::parse($proyek->tanggal_mulai)->format('d/m/Y') }}</td>
+                        <td>
+                            @if($proyek->status == 'berjalan')
+                                <span class="badge bg-warning text-dark">Berjalan</span>
+                            @else
+                                <span class="badge bg-success">Selesai</span>
+                            @endif
+                        </td>
+                        <td class="d-none d-md-table-cell">{{ $proyek->klien->nama_klien }}</td>
                     </tr>
+                    @empty
                     <tr>
-                        <td>Pembangunan Area P</td>
-                        <td class="d-none d-xl-table-cell">15/02/2026</td>
-                        <td class="d-none d-xl-table-cell">-</td>
-                        <td><span class="badge bg-warning">Berjalan</span></td>
-                        <td class="d-none d-md-table-cell">Bpk. Budi</td>
+                        <td colspan="5" class="text-center text-muted">Belum ada proyek</td>
                     </tr>
+                    @endforelse
                 </tbody>
             </table>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4 col-xxl-3 d-flex">
+        <div class="card flex-fill w-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="align-middle" data-feather="alert-triangle"></i>
+                    Stok Menipis
+                </h5>
+            </div>
+            <div class="card-body d-flex flex-column">
+                @forelse($stokMenipis as $stok)
+                <div class="d-flex align-items-center mb-3">
+                    <div class="flex-grow-1">
+                        <strong>{{ $stok->nama_bahan }}</strong>
+                        <br>
+                        <small class="text-muted">{{ $stok->id_barang }}</small>
+                    </div>
+                    <div>
+                        <span class="badge bg-danger fs-6">{{ $stok->stok }} {{ $stok->satuan }}</span>
+                    </div>
+                </div>
+                @empty
+                <p class="text-success mb-0"><i class="align-middle" data-feather="check-circle"></i> Semua stok aman!</p>
+                @endforelse
+            </div>
         </div>
     </div>
 </div>
@@ -146,39 +177,32 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var ctx = document.getElementById("chartjs-dashboard-line").getContext("2d");
-        var gradient = ctx.createLinearGradient(0, 0, 0, 225);
-        gradient.addColorStop(0, "rgba(215, 227, 244, 1)");
-        gradient.addColorStop(1, "rgba(215, 227, 244, 0)");
-        // Line chart
+        var gradientIn = ctx.createLinearGradient(0, 0, 0, 225);
+        gradientIn.addColorStop(0, "rgba(75, 192, 192, 0.3)");
+        gradientIn.addColorStop(1, "rgba(75, 192, 192, 0)");
+
         new Chart(document.getElementById("chartjs-dashboard-line"), {
             type: "line",
             data: {
-                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                labels: {!! json_encode($bulanNama) !!},
                 datasets: [{
                     label: "Pemasukan (Juta)",
                     fill: true,
-                    backgroundColor: gradient,
-                    borderColor: window.theme.primary,
-                    data: [
-                        21,
-                        15,
-                        15,
-                        18,
-                        15,
-                        19,
-                        25,
-                        24,
-                        28,
-                        34,
-                        29,
-                        33
-                    ]
+                    backgroundColor: gradientIn,
+                    borderColor: "rgb(75, 192, 192)",
+                    data: {!! json_encode($chartPemasukan) !!}
+                }, {
+                    label: "Pengeluaran (Juta)",
+                    fill: false,
+                    borderColor: "rgb(255, 99, 132)",
+                    borderDash: [5, 5],
+                    data: {!! json_encode($chartPengeluaran) !!}
                 }]
             },
             options: {
                 maintainAspectRatio: false,
                 legend: {
-                    display: false
+                    display: true
                 },
                 tooltips: {
                     intersect: false
@@ -195,17 +219,16 @@
                     xAxes: [{
                         reverse: true,
                         gridLines: {
-                            color: "rgba(0,0,0,0.0)"
+                            color: "rgba(0,0,0,0.05)"
                         }
                     }],
                     yAxes: [{
                         ticks: {
-                            stepSize: 10
+                            stepSize: 5
                         },
                         display: true,
-                        borderDash: [3, 3],
                         gridLines: {
-                            color: "rgba(0,0,0,0.0)"
+                            color: "rgba(0,0,0,0.05)"
                         }
                     }]
                 }

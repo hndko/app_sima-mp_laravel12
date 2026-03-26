@@ -7,14 +7,21 @@ use Illuminate\Http\Request;
 
 class KeuanganController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $keuangans = Keuangan::latest()->paginate(15);
-        $totalPemasukan = Keuangan::sum('pemasukan');
-        $totalPengeluaran = Keuangan::sum('pengeluaran');
-        $saldo = $totalPemasukan - $totalPengeluaran;
+        $query = Keuangan::query();
 
-        return view('backend.keuangan.index', compact('keuangans', 'totalPemasukan', 'totalPengeluaran', 'saldo'));
+        if ($request->filled('bulan')) {
+            $query->whereMonth('tanggal', date('m', strtotime($request->bulan)))
+                  ->whereYear('tanggal', date('Y', strtotime($request->bulan)));
+        }
+
+        $keuangans = $query->latest('tanggal')->paginate(15);
+
+        $totalPemasukan = $query->sum('pemasukan');
+        $totalPengeluaran = $query->sum('pengeluaran');
+
+        return view('backend.keuangan.index', compact('keuangans', 'totalPemasukan', 'totalPengeluaran'));
     }
 
     public function create()
@@ -35,7 +42,7 @@ class KeuanganController extends Controller
 
         Keuangan::create($validated);
 
-        return redirect()->route('keuangan.index')->with('success', 'Data Keuangan berhasil ditambahkan.');
+        return redirect()->route('keuangan.index')->with('success', 'Transaksi keuangan berhasil dicatat.');
     }
 
     public function edit(Keuangan $keuangan)
@@ -56,12 +63,12 @@ class KeuanganController extends Controller
 
         $keuangan->update($validated);
 
-        return redirect()->route('keuangan.index')->with('success', 'Data Keuangan berhasil diperbarui.');
+        return redirect()->route('keuangan.index')->with('success', 'Transaksi keuangan berhasil diperbarui.');
     }
 
     public function destroy(Keuangan $keuangan)
     {
         $keuangan->delete();
-        return redirect()->route('keuangan.index')->with('success', 'Data Keuangan berhasil dihapus.');
+        return redirect()->route('keuangan.index')->with('success', 'Transaksi keuangan berhasil dihapus.');
     }
 }
