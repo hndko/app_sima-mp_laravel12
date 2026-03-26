@@ -1,7 +1,7 @@
 <nav id="sidebar" class="sidebar js-sidebar">
 	<div class="sidebar-content js-simplebar">
 		<a class="sidebar-brand" href="{{ url('/') }}">
-  <span class="align-middle">APLIKASI CV</span>
+  <span class="align-middle">{{ config('app.name') }}</span>
 </a>
 
 		<ul class="sidebar-nav">

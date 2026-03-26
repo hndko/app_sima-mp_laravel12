@@ -8,7 +8,7 @@
 		<div class="d-table-cell align-middle">
 
 			<div class="text-center mt-4">
-				<h1 class="h2">APLIKASI CV</h1>
+				<h1 class="h2">{{ config('app.name') }}</h1>
 				<p class="lead">
 					Sign in to your account to continue
 				</p>

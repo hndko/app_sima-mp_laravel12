@@ -1,185 +1,243 @@
 @extends('layouts.app-backend')
 
-@section('title', 'Detail Proyek & Rincian')
+@section('title', 'Detail Proyek - ' . $proyek->kode_proyek)
 
 @section('content')
+{{-- Header --}}
+<div class="row mb-3 align-items-center">
+    <div class="col">
+        <h1 class="h3 mb-0"><strong>Detail Proyek</strong> {{ $proyek->kode_proyek }}</h1>
+    </div>
+    <div class="col-auto">
+        <a href="{{ route('proyek.edit', $proyek->id) }}" class="btn btn-info"><i class="align-middle" data-feather="edit-2"></i> Edit Proyek</a>
+        <a href="{{ route('proyek.index') }}" class="btn btn-secondary"><i class="align-middle" data-feather="arrow-left"></i> Kembali</a>
+    </div>
+</div>
+
+{{-- Flash Messages --}}
+@foreach(['success' => 'success', 'error' => 'danger', 'info' => 'info'] as $key => $type)
+    @if(session($key))
+    <div class="alert alert-{{ $type }} alert-dismissible" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="alert-message">{{ session($key) }}</div>
+    </div>
+    @endif
+@endforeach
+
+{{-- Ringkasan Proyek (4 kartu) --}}
+@php $grandTotal = $proyek->rincianProyeks->sum('total'); @endphp
 <div class="row mb-3">
-    <div class="col-6">
-        <h1 class="h3 mb-3"><strong>Detail</strong> Proyek</h1>
+    <div class="col-md-3 col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col mt-0"><h5 class="card-title">Nilai Dana</h5></div>
+                    <div class="col-auto"><div class="stat text-primary"><i class="align-middle" data-feather="dollar-sign"></i></div></div>
+                </div>
+                <h1 class="mt-1 mb-3 text-success">Rp {{ number_format($proyek->dana_proyek, 0, ',', '.') }}</h1>
+                <div class="mb-0"><span class="text-muted">Anggaran proyek</span></div>
+            </div>
+        </div>
     </div>
-    <div class="col-6 text-end">
-        <a href="{{ route('proyek.index') }}" class="btn btn-secondary">Kembali</a>
+    <div class="col-md-3 col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col mt-0"><h5 class="card-title">Biaya Material</h5></div>
+                    <div class="col-auto"><div class="stat text-primary"><i class="align-middle" data-feather="shopping-cart"></i></div></div>
+                </div>
+                <h1 class="mt-1 mb-3 text-danger">Rp {{ number_format($grandTotal, 0, ',', '.') }}</h1>
+                <div class="mb-0"><span class="text-muted">Total pemakaian bahan</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col mt-0"><h5 class="card-title">Sisa Anggaran</h5></div>
+                    <div class="col-auto"><div class="stat text-primary"><i class="align-middle" data-feather="trending-up"></i></div></div>
+                </div>
+                @php $sisa = $proyek->dana_proyek - $grandTotal; @endphp
+                <h1 class="mt-1 mb-3 {{ $sisa >= 0 ? 'text-primary' : 'text-danger' }}">Rp {{ number_format($sisa, 0, ',', '.') }}</h1>
+                <div class="mb-0"><span class="text-muted">{{ $sisa >= 0 ? 'Margin tersisa' : 'Over budget!' }}</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col mt-0"><h5 class="card-title">Item Rincian</h5></div>
+                    <div class="col-auto"><div class="stat text-primary"><i class="align-middle" data-feather="layers"></i></div></div>
+                </div>
+                <h1 class="mt-1 mb-3">{{ $proyek->rincianProyeks->count() }}</h1>
+                <div class="mb-0"><span class="text-muted">Jenis material dipakai</span></div>
+            </div>
+        </div>
     </div>
 </div>
-
-@if (session('success'))
-<div class="alert alert-success alert-dismissible" role="alert">
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    <div class="alert-message">{{ session('success') }}</div>
-</div>
-@endif
-
-@if (session('error'))
-<div class="alert alert-danger alert-dismissible" role="alert">
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    <div class="alert-message">{{ session('error') }}</div>
-</div>
-@endif
-
-@if (session('info'))
-<div class="alert alert-info alert-dismissible" role="alert">
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    <div class="alert-message">{{ session('info') }}</div>
-</div>
-@endif
 
 <div class="row">
-    <div class="col-12 col-md-4">
+    {{-- Panel Kiri: Info Proyek --}}
+    <div class="col-12 col-lg-4">
         <div class="card">
-            <div class="card-header pb-0">
+            <div class="card-header">
                 <h5 class="card-title mb-0">Informasi Proyek</h5>
             </div>
             <div class="card-body">
-                <table class="table table-sm pb-0 mb-0">
-                    <tr>
-                        <th width="40%">Kode Proyek</th>
-                        <td>: {{ $proyek->kode_proyek }}</td>
-                    </tr>
-                    <tr>
-                        <th>Status</th>
-                        <td>: 
-                            @if($proyek->status == 'berjalan')
-                                <span class="badge bg-warning text-dark">Berjalan</span>
-                            @else
-                                <span class="badge bg-success">Selesai</span>
-                            @endif
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Klien</th>
-                        <td>: <strong>{{ $proyek->klien->nama_klien }}</strong></td>
-                    </tr>
-                    <tr>
-                        <th>Tanggal Mulai</th>
-                        <td>: {{ \Carbon\Carbon::parse($proyek->tanggal_mulai)->format('d M Y') }}</td>
-                    </tr>
-                    <tr>
-                        <th>Tgl Selesai</th>
-                        <td>: {{ $proyek->tanggal_selesai ? \Carbon\Carbon::parse($proyek->tanggal_selesai)->format('d M Y') : '-' }}</td>
-                    </tr>
-                    <tr>
-                        <th>Ukuran Pekerjaan</th>
-                        <td>: {{ $proyek->ukuran }} {{ $proyek->satuan }}</td>
-                    </tr>
-                    <tr>
-                        <th>Nilai Dana</th>
-                        <td>: <strong class="text-success">Rp {{ number_format($proyek->dana_proyek, 0, ',', '.') }}</strong></td>
-                    </tr>
-                </table>
+                <div class="mb-3">
+                    <label class="form-label text-muted small mb-0">Kode Proyek</label>
+                    <div class="fw-bold">{{ $proyek->kode_proyek }}</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-muted small mb-0">Status</label>
+                    <div>
+                        @if($proyek->status == 'berjalan')
+                            <span class="badge bg-warning text-dark">Berjalan</span>
+                        @else
+                            <span class="badge bg-success">Selesai</span>
+                        @endif
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-muted small mb-0">Klien</label>
+                    <div class="fw-bold">{{ $proyek->klien->nama_klien }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label class="form-label text-muted small mb-0">Tanggal Mulai</label>
+                        <div>{{ \Carbon\Carbon::parse($proyek->tanggal_mulai)->format('d M Y') }}</div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label class="form-label text-muted small mb-0">Tanggal Selesai</label>
+                        <div>{{ $proyek->tanggal_selesai ? \Carbon\Carbon::parse($proyek->tanggal_selesai)->format('d M Y') : '-' }}</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label class="form-label text-muted small mb-0">Ukuran</label>
+                        <div>{{ $proyek->ukuran ?? '-' }} {{ $proyek->satuan }}</div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label class="form-label text-muted small mb-0">Nilai Dana</label>
+                        <div class="fw-bold text-success">Rp {{ number_format($proyek->dana_proyek, 0, ',', '.') }}</div>
+                    </div>
+                </div>
                 <hr>
-                <h6>Uraian Pekerjaan:</h6>
-                <p class="text-muted">{{ $proyek->uraian }}</p>
+                <label class="form-label text-muted small mb-1">Uraian Pekerjaan</label>
+                <p class="mb-0">{{ $proyek->uraian }}</p>
             </div>
         </div>
     </div>
 
-    <!-- Rincian Proyek -->
-    <div class="col-12 col-md-8">
+    {{-- Panel Kanan: Form + Tabel Rincian --}}
+    <div class="col-12 col-lg-8">
+        {{-- Form Tambah Rincian --}}
         <div class="card">
-            <div class="card-header border-bottom d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">Rincian Material / Bahan Proyek</h5>
+            <div class="card-header">
+                <h5 class="card-title mb-0"><i class="align-middle" data-feather="plus-circle"></i> Tambah Material / Bahan</h5>
             </div>
-            <div class="card-body bg-light">
+            <div class="card-body">
                 <form action="{{ route('rincian.store', $proyek->id) }}" method="POST">
                     @csrf
-                    <div class="row align-items-end">
-                        <div class="col-md-5 mb-3">
-                            <label class="form-label fw-bold">Ambil dari Stok Gudang</label>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Pilih dari Stok Gudang</label>
                             <select name="stok_id" class="form-select" id="stok-select">
-                                <option value="">-- Ketik Manual (Non-Gudang) --</option>
+                                <option value="">-- Input Manual (Non-Gudang) --</option>
                                 @foreach($stoks as $stok)
                                     <option value="{{ $stok->id }}" data-satuan="{{ $stok->satuan }}" data-harga="{{ $stok->harga_penjualan }}" data-sisa="{{ $stok->stok }}">
-                                        {{ $stok->nama_bahan }} (Sisa: {{ $stok->stok }})
+                                        {{ $stok->nama_bahan }} (Sisa: {{ $stok->stok }} {{ $stok->satuan }})
                                     </option>
                                 @endforeach
                             </select>
-                            <small class="text-muted">*Memilih dari gudang akan memotong stok otomatis.</small>
+                            <small class="text-muted">Memilih dari gudang akan memotong stok otomatis.</small>
                         </div>
-                        <div class="col-md-7">
-                            <!-- Field Manual jika tidak pilih dari tabel Stok -->
-                            <div class="row" id="manual-fields">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Nama Bahan <span class="text-danger">*</span></label>
-                                    <input type="text" name="bahan" id="input-bahan" class="form-control form-control-sm" placeholder="Contoh: Paku Payung">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Harga Satuan (Rp) <span class="text-danger">*</span></label>
-                                    <input type="number" name="harga" id="input-harga" class="form-control form-control-sm" placeholder="15000">
-                                </div>
-                            </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Nama Bahan <span class="text-danger">*</span></label>
+                            <input type="text" name="bahan" id="input-bahan" class="form-control" placeholder="Paku Payung">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Harga Satuan (Rp) <span class="text-danger">*</span></label>
+                            <input type="number" name="harga" id="input-harga" class="form-control" placeholder="15000">
                         </div>
                     </div>
-                    <div class="row mt-2">
+                    <div class="row align-items-end">
                         <div class="col-md-3 mb-3">
-                            <label class="form-label">Jumlah Pemakaian <span class="text-danger">*</span></label>
+                            <label class="form-label">Jumlah <span class="text-danger">*</span></label>
                             <input type="number" name="jumlah" class="form-control" value="1" min="1" required>
                         </div>
                         <div class="col-md-3 mb-3">
-                            <label class="form-label">Satuan</label>
-                            <input type="text" name="satuan" id="input-satuan" class="form-control" placeholder="Contoh: Kg" required>
+                            <label class="form-label">Satuan <span class="text-danger">*</span></label>
+                            <input type="text" name="satuan" id="input-satuan" class="form-control" placeholder="Kg, Sak, Btg" required>
                         </div>
-                        <div class="col-md-6 mb-3 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100">Tambah Material Rincian</button>
+                        <div class="col-md-6 mb-3">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="align-middle" data-feather="plus"></i> Tambah Material
+                            </button>
                         </div>
                     </div>
                 </form>
             </div>
+        </div>
 
-            <!-- Tabel Daftar Rincian -->
-            <table class="table table-bordered table-striped mb-0 mt-3">
+        {{-- Tabel Rincian --}}
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Daftar Rincian Material</h5>
+                <span class="badge bg-primary">{{ $proyek->rincianProyeks->count() }} Item</span>
+            </div>
+            <table class="table table-hover mb-0">
                 <thead>
                     <tr>
+                        <th>No</th>
                         <th>Material</th>
-                        <th>Jumlah</th>
-                        <th>Harga Satuan</th>
-                        <th>Subtotal</th>
-                        <th>Tindakan</th>
+                        <th class="text-center">Jumlah</th>
+                        <th class="text-end">Harga Satuan</th>
+                        <th class="text-end">Subtotal</th>
+                        <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @php $grandTotal = 0; @endphp
-                    @forelse($proyek->rincianProyeks as $rincian)
-                        @php $grandTotal += $rincian->total; @endphp
-                        <tr>
-                            <td>
-                                {{ $rincian->bahan }}
-                                @if($rincian->stok_id)
-                                    <span class="badge bg-success ms-1">Gudang</span>
-                                @else
-                                    <span class="badge bg-secondary ms-1">Bebas</span>
-                                @endif
-                            </td>
-                            <td>{{ $rincian->jumlah }} {{ $rincian->satuan }}</td>
-                            <td>Rp {{ number_format($rincian->harga, 0, ',', '.') }}</td>
-                            <td>Rp {{ number_format($rincian->total, 0, ',', '.') }}</td>
-                            <td>
-                                <form action="{{ route('rincian.destroy', ['proyek' => $proyek->id, 'rincian' => $rincian->id]) }}" method="POST" onsubmit="return confirm('Hapus rincian ini? Stok gudang akan dikembalikan secara otomatis jika bersumber dari Gudang.');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Retur / Batal</button>
-                                </form>
-                            </td>
-                        </tr>
+                    @forelse($proyek->rincianProyeks as $i => $rincian)
+                    <tr>
+                        <td>{{ $i + 1 }}</td>
+                        <td>
+                            <strong>{{ $rincian->bahan }}</strong>
+                            @if($rincian->stok_id)
+                                <span class="badge bg-success ms-1">Gudang</span>
+                            @else
+                                <span class="badge bg-secondary ms-1">Bebas</span>
+                            @endif
+                        </td>
+                        <td class="text-center">{{ $rincian->jumlah }} {{ $rincian->satuan }}</td>
+                        <td class="text-end">Rp {{ number_format($rincian->harga, 0, ',', '.') }}</td>
+                        <td class="text-end fw-bold">Rp {{ number_format($rincian->total, 0, ',', '.') }}</td>
+                        <td class="text-center">
+                            <form action="{{ route('rincian.destroy', ['proyek' => $proyek->id, 'rincian' => $rincian->id]) }}" method="POST" onsubmit="return confirm('Hapus rincian ini? Stok gudang akan dikembalikan jika bersumber dari Gudang.');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="align-middle" data-feather="trash-2"></i> Hapus
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
                     @empty
-                        <tr>
-                            <td colspan="5" class="text-center font-italic text-muted">Belum ada pemakaian material yang dicatat.</td>
-                        </tr>
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i class="align-middle mb-2" data-feather="inbox" style="width:32px;height:32px;"></i><br>
+                            Belum ada pemakaian material yang dicatat.
+                        </td>
+                    </tr>
                     @endforelse
                 </tbody>
-                <tfoot>
+                <tfoot class="table-light">
                     <tr>
-                        <th colspan="3" class="text-end">Total Biaya Beban Pemakaian:</th>
-                        <th colspan="2" class="text-danger">Rp {{ number_format($grandTotal, 0, ',', '.') }}</th>
+                        <th colspan="4" class="text-end">Total Biaya Material:</th>
+                        <th class="text-end text-danger fs-5">Rp {{ number_format($grandTotal, 0, ',', '.') }}</th>
+                        <th></th>
                     </tr>
                 </tfoot>
             </table>
@@ -196,19 +254,26 @@
 
         stokSelect.addEventListener('change', function() {
             if(this.value !== "") {
-                const selectedOption = this.options[this.selectedIndex];
+                const opt = this.options[this.selectedIndex];
                 inputBahan.value = '';
                 inputHarga.value = '';
-                inputSatuan.value = selectedOption.getAttribute('data-satuan');
-                
+                inputSatuan.value = opt.getAttribute('data-satuan');
                 inputBahan.disabled = true;
                 inputHarga.disabled = true;
                 inputSatuan.disabled = true;
+
+                inputBahan.classList.add('bg-light');
+                inputHarga.classList.add('bg-light');
+                inputSatuan.classList.add('bg-light');
             } else {
                 inputBahan.disabled = false;
                 inputHarga.disabled = false;
                 inputSatuan.disabled = false;
                 inputSatuan.value = '';
+
+                inputBahan.classList.remove('bg-light');
+                inputHarga.classList.remove('bg-light');
+                inputSatuan.classList.remove('bg-light');
             }
         });
     });
