@@ -15,6 +15,7 @@
     </a>
 			</li>
 
+			@if(auth()->user()->hasAccess(['admin', 'manajer']))
 			<li class="sidebar-item {{ request()->is('karyawan*') ? 'active' : '' }}">
 				<a class="sidebar-link" href="{{ url('/karyawan') }}">
       <i class="align-middle" data-feather="users"></i> <span class="align-middle">Karyawan</span>
@@ -40,13 +41,19 @@
 			</li>
 
 			<li class="sidebar-header">
-				Proyek & Keuangan
+				Proyek
 			</li>
 
 			<li class="sidebar-item {{ request()->is('proyek*') ? 'active' : '' }}">
 				<a class="sidebar-link" href="{{ url('/proyek') }}">
-      <i class="align-middle" data-feather="briefcase"></i> <span class="align-middle">Manajamen Proyek</span>
+      <i class="align-middle" data-feather="briefcase"></i> <span class="align-middle">Manajemen Proyek</span>
     </a>
+			</li>
+			@endif
+
+			@if(auth()->user()->hasAccess(['admin', 'keuangan']))
+			<li class="sidebar-header">
+				Keuangan
 			</li>
 
 			<li class="sidebar-item {{ request()->is('keuangan*') ? 'active' : '' }}">
@@ -66,6 +73,19 @@
       <i class="align-middle" data-feather="file-text"></i> <span class="align-middle">Hutang Piutang</span>
     </a>
 			</li>
+			@endif
+
+			@if(auth()->user()->isAdmin())
+			<li class="sidebar-header">
+				Pengaturan
+			</li>
+
+			<li class="sidebar-item {{ request()->is('users*') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ url('/users') }}">
+      <i class="align-middle" data-feather="shield"></i> <span class="align-middle">Manajemen User</span>
+    </a>
+			</li>
+			@endif
 		</ul>
 	</div>
 </nav>

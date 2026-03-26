@@ -14,7 +14,7 @@
     <img src="{{ asset('assets/img/avatars/avatar.jpg') }}" class="avatar img-fluid rounded me-1" alt="{{ Auth::user()->name }}" /> <span class="text-dark">{{ Auth::user()->name }}</span>
   </a>
 				<div class="dropdown-menu dropdown-menu-end">
-					<a class="dropdown-item" href="{{ url('/profile') }}"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
+					<a class="dropdown-item" href="{{ route('profile.index') }}"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
 					<div class="dropdown-divider"></div>
 					<a class="dropdown-item" href="{{ url('/settings') }}"><i class="align-middle me-1" data-feather="settings"></i> Settings & Privacy</a>
 					<div class="dropdown-divider"></div>
