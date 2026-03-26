@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Klien;
+use App\Traits\LogsActivity;
 use Illuminate\Http\Request;
 
 class KlienController extends Controller
 {
+    use LogsActivity;
+
     public function index()
     {
         $kliens = Klien::latest()->get();
@@ -28,7 +31,8 @@ class KlienController extends Controller
             'nama_facebook' => 'nullable|string|max:255',
         ]);
 
-        Klien::create($validated);
+        $klien = Klien::create($validated);
+        $this->logActivity('create', 'klien', "Menambahkan klien: {$klien->nama_klien}", null, $klien->toArray());
 
         return redirect()->route('klien.index')->with('success', 'Data Klien berhasil ditambahkan.');
     }
@@ -48,13 +52,16 @@ class KlienController extends Controller
             'nama_facebook' => 'nullable|string|max:255',
         ]);
 
+        $dataLama = $klien->toArray();
         $klien->update($validated);
+        $this->logActivity('update', 'klien', "Mengupdate klien: {$klien->nama_klien}", $dataLama, $klien->toArray());
 
         return redirect()->route('klien.index')->with('success', 'Data Klien berhasil diperbarui.');
     }
 
     public function destroy(Klien $klien)
     {
+        $this->logActivity('delete', 'klien', "Menghapus klien: {$klien->nama_klien}", $klien->toArray(), null);
         $klien->delete();
         return redirect()->route('klien.index')->with('success', 'Data Klien berhasil dihapus.');
     }

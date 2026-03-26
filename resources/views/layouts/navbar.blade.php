@@ -16,7 +16,7 @@
 				<div class="dropdown-menu dropdown-menu-end">
 					<a class="dropdown-item" href="{{ route('profile.index') }}"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
 					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="{{ url('/settings') }}"><i class="align-middle me-1" data-feather="settings"></i> Settings & Privacy</a>
+					<a class="dropdown-item" href="{{ route('settings.index') }}"><i class="align-middle me-1" data-feather="settings"></i> Settings & Privacy</a>
 					<div class="dropdown-divider"></div>
 					<form action="{{ route('logout') }}" method="POST">
                         @csrf

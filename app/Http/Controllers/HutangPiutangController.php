@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\HutangPiutang;
 use App\Models\Karyawan;
+use App\Traits\LogsActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class HutangPiutangController extends Controller
 {
+    use LogsActivity;
     /**
      * Rekap per karyawan: total pengambilan, total upah, saldo
      */
@@ -61,7 +63,8 @@ class HutangPiutangController extends Controller
             'keterangan' => 'nullable|string',
         ]);
 
-        HutangPiutang::create($validated);
+        $hutang_piutang = HutangPiutang::create($validated);
+        $this->logActivity('create', 'hutang_piutang', 'Mencatat transaksi hutang/piutang karyawan', null, $hutang_piutang->toArray());
 
         return redirect()->route('hutang-piutang.show', $validated['karyawan_id'])
             ->with('success', 'Transaksi hutang/piutang berhasil dicatat.');
@@ -83,7 +86,9 @@ class HutangPiutangController extends Controller
             'keterangan' => 'nullable|string',
         ]);
 
+        $dataLama = $hutang_piutang->toArray();
         $hutang_piutang->update($validated);
+        $this->logActivity('update', 'hutang_piutang', 'Mengupdate transaksi hutang/piutang karyawan', $dataLama, $hutang_piutang->toArray());
 
         return redirect()->route('hutang-piutang.show', $validated['karyawan_id'])
             ->with('success', 'Transaksi hutang/piutang berhasil diperbarui.');
@@ -92,6 +97,7 @@ class HutangPiutangController extends Controller
     public function destroy(HutangPiutang $hutang_piutang)
     {
         $karyawanId = $hutang_piutang->karyawan_id;
+        $this->logActivity('delete', 'hutang_piutang', 'Menghapus transaksi hutang/piutang karyawan', $hutang_piutang->toArray(), null);
         $hutang_piutang->delete();
 
         return redirect()->route('hutang-piutang.show', $karyawanId)

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\KasRekening;
+use App\Traits\LogsActivity;
 use Illuminate\Http\Request;
 
 class KasRekeningController extends Controller
 {
+    use LogsActivity;
     public function index(Request $request)
     {
         $query = KasRekening::query();
@@ -39,7 +41,8 @@ class KasRekeningController extends Controller
             'nominal_keluar' => 'required|numeric|min:0',
         ]);
 
-        KasRekening::create($validated);
+        $kas = KasRekening::create($validated);
+        $this->logActivity('create', 'kas_rekening', 'Mencatat mutasi kas/rekening', null, $kas->toArray());
 
         return redirect()->route('kas-rekening.index')->with('success', 'Mutasi kas rekening berhasil dicatat.');
     }
@@ -58,13 +61,16 @@ class KasRekeningController extends Controller
             'nominal_keluar' => 'required|numeric|min:0',
         ]);
 
+        $dataLama = $kas_rekening->toArray();
         $kas_rekening->update($validated);
+        $this->logActivity('update', 'kas_rekening', 'Mengupdate mutasi kas/rekening', $dataLama, $kas_rekening->toArray());
 
         return redirect()->route('kas-rekening.index')->with('success', 'Mutasi kas rekening berhasil diperbarui.');
     }
 
     public function destroy(KasRekening $kas_rekening)
     {
+        $this->logActivity('delete', 'kas_rekening', 'Menghapus mutasi kas/rekening', $kas_rekening->toArray(), null);
         $kas_rekening->delete();
         return redirect()->route('kas-rekening.index')->with('success', 'Mutasi kas rekening berhasil dihapus.');
     }

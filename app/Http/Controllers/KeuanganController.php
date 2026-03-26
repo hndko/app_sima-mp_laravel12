@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Keuangan;
+use App\Traits\LogsActivity;
 use Illuminate\Http\Request;
 
 class KeuanganController extends Controller
 {
+    use LogsActivity;
     public function index(Request $request)
     {
         $query = Keuangan::query();
@@ -40,7 +42,8 @@ class KeuanganController extends Controller
             'pengeluaran' => 'required|numeric|min:0',
         ]);
 
-        Keuangan::create($validated);
+        $keuangan = Keuangan::create($validated);
+        $this->logActivity('create', 'keuangan', 'Menambahkan transaksi keuangan', null, $keuangan->toArray());
 
         return redirect()->route('keuangan.index')->with('success', 'Transaksi keuangan berhasil dicatat.');
     }
@@ -68,6 +71,7 @@ class KeuanganController extends Controller
 
     public function destroy(Keuangan $keuangan)
     {
+        $this->logActivity('delete', 'keuangan', 'Menghapus transaksi keuangan', $keuangan->toArray(), null);
         $keuangan->delete();
         return redirect()->route('keuangan.index')->with('success', 'Transaksi keuangan berhasil dihapus.');
     }

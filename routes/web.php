@@ -14,6 +14,10 @@ use App\Http\Controllers\HutangPiutangController;
 use App\Http\Controllers\RiwayatStokController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PembelianController;
+use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\SettingController;
 
 Route::get('/', function () {
     return redirect('/dashboard');
@@ -31,7 +35,7 @@ Route::middleware('auth')->group(function() {
     Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
-    // Master Data: admin & manajer
+    // Master Data & Proyek: admin & manajer
     Route::middleware('role:admin,manajer')->group(function() {
         Route::resource('karyawan', KaryawanController::class);
         Route::resource('klien', KlienController::class);
@@ -40,7 +44,7 @@ Route::middleware('auth')->group(function() {
         Route::post('/proyek/{proyek}/rincian', [RincianProyekController::class, 'store'])->name('rincian.store');
         Route::delete('/proyek/{proyek}/rincian/{rincian}', [RincianProyekController::class, 'destroy'])->name('rincian.destroy');
         Route::get('/riwayat-stok', [RiwayatStokController::class, 'index'])->name('riwayat-stok.index');
-        Route::resource('pembelian', \App\Http\Controllers\PembelianController::class)->only(['index', 'create', 'store', 'destroy']);
+        Route::resource('pembelian', PembelianController::class)->only(['index', 'create', 'store', 'destroy']);
     });
 
     // Keuangan: admin & keuangan
@@ -50,8 +54,16 @@ Route::middleware('auth')->group(function() {
         Route::resource('hutang-piutang', HutangPiutangController::class);
     });
 
+    // Laporan PDF (semua role yang punya akses ke data)
+    Route::get('/laporan/proyek/{proyek}/pdf', [LaporanController::class, 'proyekPDF'])->name('laporan.proyek.pdf');
+    Route::get('/laporan/keuangan/pdf', [LaporanController::class, 'keuanganPDF'])->name('laporan.keuangan.pdf');
+    Route::get('/laporan/hutang-piutang/{karyawan}/pdf', [LaporanController::class, 'hutangPiutangPDF'])->name('laporan.hutang-piutang.pdf');
+
     // Admin only
     Route::middleware('role:admin')->group(function() {
         Route::resource('users', UserController::class)->except(['show']);
+        Route::get('/log-aktivitas', [ActivityLogController::class, 'index'])->name('log-aktivitas.index');
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
     });
 });

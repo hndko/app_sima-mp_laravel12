@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Karyawan;
+use App\Traits\LogsActivity;
 use Illuminate\Http\Request;
 
 class KaryawanController extends Controller
 {
+    use LogsActivity;
+
     public function index()
     {
         $karyawans = Karyawan::latest()->get();
@@ -28,7 +31,8 @@ class KaryawanController extends Controller
             'no_hp' => 'nullable|string|max:20',
         ]);
 
-        Karyawan::create($validated);
+        $karyawan = Karyawan::create($validated);
+        $this->logActivity('create', 'karyawan', "Menambahkan karyawan: {$karyawan->nama_karyawan}", null, $karyawan->toArray());
 
         return redirect()->route('karyawan.index')->with('success', 'Data Karyawan berhasil ditambahkan.');
     }
@@ -48,13 +52,16 @@ class KaryawanController extends Controller
             'no_hp' => 'nullable|string|max:20',
         ]);
 
+        $dataLama = $karyawan->toArray();
         $karyawan->update($validated);
+        $this->logActivity('update', 'karyawan', "Mengupdate karyawan: {$karyawan->nama_karyawan}", $dataLama, $karyawan->toArray());
 
         return redirect()->route('karyawan.index')->with('success', 'Data Karyawan berhasil diperbarui.');
     }
 
     public function destroy(Karyawan $karyawan)
     {
+        $this->logActivity('delete', 'karyawan', "Menghapus karyawan: {$karyawan->nama_karyawan}", $karyawan->toArray(), null);
         $karyawan->delete();
         return redirect()->route('karyawan.index')->with('success', 'Data Karyawan berhasil dihapus.');
     }

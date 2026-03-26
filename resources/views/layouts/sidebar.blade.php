@@ -91,6 +91,18 @@
       <i class="align-middle" data-feather="shield"></i> <span class="align-middle">Manajemen User</span>
     </a>
 			</li>
+
+			<li class="sidebar-item {{ request()->is('log-aktivitas*') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ url('/log-aktivitas') }}">
+      <i class="align-middle" data-feather="activity"></i> <span class="align-middle">Log Aktivitas</span>
+    </a>
+			</li>
+
+			<li class="sidebar-item {{ request()->is('settings*') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ url('/settings') }}">
+      <i class="align-middle" data-feather="settings"></i> <span class="align-middle">Pengaturan</span>
+    </a>
+			</li>
 			@endif
 		</ul>
 	</div>

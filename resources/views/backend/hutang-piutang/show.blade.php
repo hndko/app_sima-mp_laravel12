@@ -8,6 +8,7 @@
         <h1 class="h3 mb-3"><strong>Rincian</strong> Hutang Piutang</h1>
     </div>
     <div class="col-6 text-end">
+        <a href="{{ route('laporan.hutang-piutang.pdf', $karyawan->id) }}" class="btn btn-danger"><i class="align-middle" data-feather="file-text"></i> Export PDF</a>
         <a href="{{ route('hutang-piutang.index') }}" class="btn btn-secondary">Kembali ke Rekap</a>
         <a href="{{ route('hutang-piutang.create', ['karyawan_id' => $karyawan->id]) }}" class="btn btn-primary">Catat Transaksi</a>
     </div>

@@ -9,6 +9,7 @@
         <h1 class="h3 mb-0"><strong>Detail Proyek</strong> {{ $proyek->kode_proyek }}</h1>
     </div>
     <div class="col-auto">
+        <a href="{{ route('laporan.proyek.pdf', $proyek->id) }}" class="btn btn-danger"><i class="align-middle" data-feather="file-text"></i> Export PDF</a>
         <a href="{{ route('proyek.edit', $proyek->id) }}" class="btn btn-info"><i class="align-middle" data-feather="edit-2"></i> Edit Proyek</a>
         <a href="{{ route('proyek.index') }}" class="btn btn-secondary"><i class="align-middle" data-feather="arrow-left"></i> Kembali</a>
     </div>

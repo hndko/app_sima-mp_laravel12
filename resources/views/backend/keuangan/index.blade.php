@@ -8,6 +8,7 @@
         <h1 class="h3 mb-3"><strong>Kas &</strong> Keuangan</h1>
     </div>
     <div class="col-6 text-end">
+        <a href="{{ route('laporan.keuangan.pdf', ['bulan' => request('bulan')]) }}" class="btn btn-danger"><i class="align-middle" data-feather="file-text"></i> Export PDF</a>
         <a href="{{ route('keuangan.create') }}" class="btn btn-primary">Catat Transaksi</a>
     </div>
 </div>
