@@ -51,11 +51,16 @@
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
                     <label class="form-label">Update Jumlah Stok <span class="text-danger">*</span></label>
                     <input type="number" name="stok" class="form-control" value="{{ old('stok', $stok->stok) }}" min="0" required>
                 </div>
-                <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Stok Minimum <span class="text-danger">*</span></label>
+                    <input type="number" name="stok_minimum" class="form-control" value="{{ old('stok_minimum', $stok->stok_minimum) }}" min="0" required>
+                    <small class="text-muted">Alert muncul jika stok ≤ nilai ini.</small>
+                </div>
+                <div class="col-md-4 mb-3">
                     <label class="form-label">Satuan</label>
                     <input type="text" name="satuan" class="form-control" value="{{ old('satuan', $stok->satuan) }}">
                 </div>

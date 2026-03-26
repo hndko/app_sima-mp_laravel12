@@ -40,6 +40,12 @@
     </a>
 			</li>
 
+			<li class="sidebar-item {{ request()->is('pembelian*') ? 'active' : '' }}">
+				<a class="sidebar-link" href="{{ url('/pembelian') }}">
+      <i class="align-middle" data-feather="shopping-bag"></i> <span class="align-middle">Pembelian Stok</span>
+    </a>
+			</li>
+
 			<li class="sidebar-header">
 				Proyek
 			</li>

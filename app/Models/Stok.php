@@ -10,7 +10,7 @@ class Stok extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id_barang', 'nama_bahan', 'harga_perolehan', 'harga_penjualan', 'stok', 'satuan'
+        'id_barang', 'nama_bahan', 'harga_perolehan', 'harga_penjualan', 'stok', 'stok_minimum', 'satuan'
     ];
 
     public function riwayatStoks()
@@ -21,5 +21,15 @@ class Stok extends Model
     public function rincianProyeks()
     {
         return $this->hasMany(RincianProyek::class);
+    }
+
+    public function pembelians()
+    {
+        return $this->hasMany(Pembelian::class);
+    }
+
+    public function isMenipis(): bool
+    {
+        return $this->stok <= $this->stok_minimum;
     }
 }

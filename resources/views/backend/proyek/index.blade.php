@@ -32,6 +32,7 @@
                 <th>Klien</th>
                 <th>Uraian</th>
                 <th>Nilai Dana</th>
+                <th>Progres</th>
                 <th>Status</th>
                 <th>Aksi</th>
             </tr>
@@ -44,6 +45,11 @@
                 <td>{{ \Illuminate\Support\Str::limit($proyek->uraian, 30) }}</td>
                 <td>Rp {{ number_format($proyek->dana_proyek, 0, ',', '.') }}</td>
                 <td>
+                    <div class="progress" style="height: 20px; min-width: 80px;">
+                        <div class="progress-bar {{ $proyek->progres >= 100 ? 'bg-success' : ($proyek->progres >= 50 ? 'bg-primary' : 'bg-warning') }}" style="width: {{ $proyek->progres }}%">{{ $proyek->progres }}%</div>
+                    </div>
+                </td>
+                <td>
                     @if($proyek->status == 'berjalan')
                         <span class="badge bg-warning text-dark">Berjalan</span>
                     @else
@@ -51,7 +57,7 @@
                     @endif
                 </td>
                 <td>
-                    <a href="{{ route('proyek.show', $proyek->id) }}" class="btn btn-sm btn-success">MateriRincian & Detail</a>
+                    <a href="{{ route('proyek.show', $proyek->id) }}" class="btn btn-sm btn-success">Detail</a>
                     <a href="{{ route('proyek.edit', $proyek->id) }}" class="btn btn-sm btn-info">Edit</a>
                     <form action="{{ route('proyek.destroy', $proyek->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Menghapus proyek akan MENGHAPUS SEMUA RINCIAN BAHAN di dalamnya. Lanjutkan?');">
                         @csrf

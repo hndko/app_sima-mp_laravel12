@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Proyek;
 use App\Models\Klien;
+use App\Traits\LogsActivity;
 use Illuminate\Http\Request;
 
 class ProyekController extends Controller
 {
+    use LogsActivity;
+
     public function index()
     {
         $proyeks = Proyek::with('klien')->latest()->get();
@@ -32,9 +35,11 @@ class ProyekController extends Controller
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
             'dana_proyek' => 'required|numeric|min:0',
             'status' => 'required|in:berjalan,selesai',
+            'progres' => 'required|integer|min:0|max:100',
         ]);
 
-        Proyek::create($validated);
+        $proyek = Proyek::create($validated);
+        $this->logActivity('create', 'proyek', "Menambahkan proyek: {$proyek->kode_proyek}", null, $proyek->toArray());
 
         return redirect()->route('proyek.index')->with('success', 'Data Proyek berhasil ditambahkan.');
     }
@@ -42,7 +47,7 @@ class ProyekController extends Controller
     public function show(Proyek $proyek)
     {
         $proyek->load(['klien', 'rincianProyeks.stok']);
-        $stoks = \App\Models\Stok::all(); // Untuk dropdown rincian
+        $stoks = \App\Models\Stok::all();
         return view('backend.proyek.show', compact('proyek', 'stoks'));
     }
 
@@ -64,15 +69,19 @@ class ProyekController extends Controller
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
             'dana_proyek' => 'required|numeric|min:0',
             'status' => 'required|in:berjalan,selesai',
+            'progres' => 'required|integer|min:0|max:100',
         ]);
 
+        $dataLama = $proyek->toArray();
         $proyek->update($validated);
+        $this->logActivity('update', 'proyek', "Mengupdate proyek: {$proyek->kode_proyek}", $dataLama, $proyek->toArray());
 
         return redirect()->route('proyek.index')->with('success', 'Data Proyek berhasil diperbarui.');
     }
 
     public function destroy(Proyek $proyek)
     {
+        $this->logActivity('delete', 'proyek', "Menghapus proyek: {$proyek->kode_proyek}", $proyek->toArray(), null);
         $proyek->delete();
         return redirect()->route('proyek.index')->with('success', 'Data Proyek beserta seluruh rinciannya berhasil dihapus.');
     }

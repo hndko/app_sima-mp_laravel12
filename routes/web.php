@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function() {
         Route::post('/proyek/{proyek}/rincian', [RincianProyekController::class, 'store'])->name('rincian.store');
         Route::delete('/proyek/{proyek}/rincian/{rincian}', [RincianProyekController::class, 'destroy'])->name('rincian.destroy');
         Route::get('/riwayat-stok', [RiwayatStokController::class, 'index'])->name('riwayat-stok.index');
+        Route::resource('pembelian', \App\Http\Controllers\PembelianController::class)->only(['index', 'create', 'store', 'destroy']);
     });
 
     // Keuangan: admin & keuangan
