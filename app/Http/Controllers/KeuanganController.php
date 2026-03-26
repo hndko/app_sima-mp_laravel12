@@ -16,7 +16,7 @@ class KeuanganController extends Controller
                   ->whereYear('tanggal', date('Y', strtotime($request->bulan)));
         }
 
-        $keuangans = $query->latest('tanggal')->paginate(15);
+        $keuangans = $query->latest('tanggal')->get();
 
         $totalPemasukan = $query->sum('pemasukan');
         $totalPengeluaran = $query->sum('pengeluaran');

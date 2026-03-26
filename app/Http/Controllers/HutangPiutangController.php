@@ -32,7 +32,7 @@ class HutangPiutangController extends Controller
     {
         $rincians = HutangPiutang::where('karyawan_id', $karyawan->id)
             ->latest('tanggal')
-            ->paginate(15);
+            ->get();
 
         $totalPengambilan = HutangPiutang::where('karyawan_id', $karyawan->id)->sum('pengambilan');
         $totalUpah = HutangPiutang::where('karyawan_id', $karyawan->id)->sum('upah');

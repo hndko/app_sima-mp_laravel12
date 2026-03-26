@@ -9,7 +9,7 @@ class KlienController extends Controller
 {
     public function index()
     {
-        $kliens = Klien::latest()->paginate(10);
+        $kliens = Klien::latest()->get();
         return view('backend.klien.index', compact('kliens'));
     }
 

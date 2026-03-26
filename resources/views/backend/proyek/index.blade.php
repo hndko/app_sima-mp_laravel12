@@ -25,7 +25,7 @@
     <div class="card-header">
         <h5 class="card-title mb-0">Daftar Proyek</h5>
     </div>
-    <table class="table table-hover my-0">
+    <table class="table table-hover my-0 datatable">
         <thead>
             <tr>
                 <th>Kode</th>
@@ -37,7 +37,7 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($proyeks as $proyek)
+            @foreach($proyeks as $proyek)
             <tr>
                 <td>{{ $proyek->kode_proyek }}</td>
                 <td>{{ $proyek->klien->nama_klien }}</td>
@@ -60,15 +60,8 @@
                     </form>
                 </td>
             </tr>
-            @empty
-            <tr>
-                <td colspan="6" class="text-center">Belum ada Proyek tercatat</td>
-            </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
-    <div class="card-footer">
-        {{ $proyeks->links() }}
-    </div>
 </div>
 @endsection

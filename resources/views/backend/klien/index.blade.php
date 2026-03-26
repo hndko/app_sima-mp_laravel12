@@ -25,7 +25,7 @@
     <div class="card-header">
         <h5 class="card-title mb-0">Daftar Klien</h5>
     </div>
-    <table class="table table-hover my-0">
+    <table class="table table-hover my-0 datatable">
         <thead>
             <tr>
                 <th>Nama Klien</th>
@@ -36,7 +36,7 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($kliens as $klien)
+            @foreach($kliens as $klien)
             <tr>
                 <td>{{ $klien->nama_klien }}</td>
                 <td>{{ $klien->no_hp ?? '-' }}</td>
@@ -51,15 +51,8 @@
                     </form>
                 </td>
             </tr>
-            @empty
-            <tr>
-                <td colspan="5" class="text-center">Belum ada data Klien</td>
-            </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
-    <div class="card-footer">
-        {{ $kliens->links() }}
-    </div>
 </div>
 @endsection

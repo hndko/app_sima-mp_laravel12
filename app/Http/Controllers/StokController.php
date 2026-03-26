@@ -9,7 +9,7 @@ class StokController extends Controller
 {
     public function index()
     {
-        $stoks = Stok::latest()->paginate(10);
+        $stoks = Stok::latest()->get();
         return view('backend.stok.index', compact('stoks'));
     }
 

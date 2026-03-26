@@ -71,7 +71,7 @@
     <div class="card-header">
         <h5 class="card-title mb-0">Riwayat Transaksi</h5>
     </div>
-    <table class="table table-hover my-0">
+    <table class="table table-hover my-0 datatable">
         <thead>
             <tr>
                 <th>Tanggal</th>
@@ -82,7 +82,7 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($rincians as $r)
+            @foreach($rincians as $r)
             <tr>
                 <td>{{ \Carbon\Carbon::parse($r->tanggal)->format('d/m/Y') }}</td>
                 <td class="text-danger">
@@ -105,15 +105,8 @@
                     </form>
                 </td>
             </tr>
-            @empty
-            <tr>
-                <td colspan="5" class="text-center">Belum ada riwayat transaksi untuk karyawan ini</td>
-            </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
-    <div class="card-footer">
-        {{ $rincians->links() }}
-    </div>
 </div>
 @endsection

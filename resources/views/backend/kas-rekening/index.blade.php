@@ -68,7 +68,7 @@
 </div>
 
 <div class="card">
-    <table class="table table-hover my-0">
+    <table class="table table-hover my-0 datatable">
         <thead>
             <tr>
                 <th>Tanggal</th>
@@ -79,7 +79,7 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($kasRekenings as $kas)
+            @foreach($kasRekenings as $kas)
             <tr>
                 <td>{{ \Carbon\Carbon::parse($kas->tanggal)->format('d/m/Y') }}</td>
                 <td>{{ \Illuminate\Support\Str::limit($kas->keterangan, 40) }}</td>
@@ -102,15 +102,8 @@
                     </form>
                 </td>
             </tr>
-            @empty
-            <tr>
-                <td colspan="5" class="text-center">Belum ada mutasi rekening tercatat</td>
-            </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
-    <div class="card-footer">
-        {{ $kasRekenings->appends(request()->query())->links() }}
-    </div>
 </div>
 @endsection

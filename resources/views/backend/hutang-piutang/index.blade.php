@@ -23,7 +23,7 @@
     <div class="card-header">
         <h5 class="card-title mb-0">Rekap Saldo per Karyawan</h5>
     </div>
-    <table class="table table-hover my-0">
+    <table class="table table-hover my-0 datatable">
         <thead>
             <tr>
                 <th>ID</th>
@@ -35,7 +35,7 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($rekap as $karyawan)
+            @foreach($rekap as $karyawan)
             <tr>
                 <td>{{ $karyawan->id_karyawan }}</td>
                 <td><strong>{{ $karyawan->nama_karyawan }}</strong></td>
@@ -54,11 +54,7 @@
                     <a href="{{ route('hutang-piutang.show', $karyawan->id) }}" class="btn btn-sm btn-success">Lihat Rincian</a>
                 </td>
             </tr>
-            @empty
-            <tr>
-                <td colspan="6" class="text-center">Belum ada data karyawan</td>
-            </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
 </div>

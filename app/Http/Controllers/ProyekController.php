@@ -10,7 +10,7 @@ class ProyekController extends Controller
 {
     public function index()
     {
-        $proyeks = Proyek::with('klien')->latest()->paginate(10);
+        $proyeks = Proyek::with('klien')->latest()->get();
         return view('backend.proyek.index', compact('proyeks'));
     }
 

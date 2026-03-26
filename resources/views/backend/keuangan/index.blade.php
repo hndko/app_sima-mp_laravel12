@@ -68,7 +68,7 @@
 </div>
 
 <div class="card">
-    <table class="table table-hover my-0">
+    <table class="table table-hover my-0 datatable">
         <thead>
             <tr>
                 <th>Tanggal</th>
@@ -81,7 +81,7 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($keuangans as $keuangan)
+            @foreach($keuangans as $keuangan)
             <tr>
                 <td>{{ \Carbon\Carbon::parse($keuangan->tanggal)->format('d/m/Y') }}</td>
                 <td>{{ $keuangan->kategori ?? '-' }}</td>
@@ -106,15 +106,8 @@
                     </form>
                 </td>
             </tr>
-            @empty
-            <tr>
-                <td colspan="7" class="text-center">Belum ada transaksi keuangan tercatat</td>
-            </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
-    <div class="card-footer">
-        {{ $keuangans->appends(request()->query())->links() }}
-    </div>
 </div>
 @endsection

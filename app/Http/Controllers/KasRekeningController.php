@@ -16,7 +16,7 @@ class KasRekeningController extends Controller
                   ->whereYear('tanggal', date('Y', strtotime($request->bulan)));
         }
 
-        $kasRekenings = $query->latest('tanggal')->paginate(15);
+        $kasRekenings = $query->latest('tanggal')->get();
 
         $totalMasuk = $query->sum('nominal_masuk');
         $totalKeluar = $query->sum('nominal_keluar');

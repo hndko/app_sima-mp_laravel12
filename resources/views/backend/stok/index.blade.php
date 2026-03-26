@@ -25,7 +25,7 @@
     <div class="card-header">
         <h5 class="card-title mb-0">Daftar Stok Inventori</h5>
     </div>
-    <table class="table table-hover my-0">
+    <table class="table table-hover my-0 datatable">
         <thead>
             <tr>
                 <th>Kode</th>
@@ -36,7 +36,7 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($stoks as $stok)
+            @foreach($stoks as $stok)
             <tr>
                 <td>{{ $stok->id_barang }}</td>
                 <td>{{ $stok->nama_bahan }}</td>
@@ -53,15 +53,8 @@
                     </form>
                 </td>
             </tr>
-            @empty
-            <tr>
-                <td colspan="5" class="text-center">Belum ada data stok</td>
-            </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
-    <div class="card-footer">
-        {{ $stoks->links() }}
-    </div>
 </div>
 @endsection

@@ -42,7 +42,7 @@
 </div>
 
 <div class="card">
-    <table class="table table-hover my-0">
+    <table class="table table-hover my-0 datatable">
         <thead>
             <tr>
                 <th>Tanggal</th>
@@ -53,7 +53,7 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($riwayats as $r)
+            @foreach($riwayats as $r)
             <tr>
                 <td>{{ \Carbon\Carbon::parse($r->tanggal)->format('d/m/Y') }}</td>
                 <td>
@@ -72,15 +72,8 @@
                 </td>
                 <td>{{ $r->keterangan ?? '-' }}</td>
             </tr>
-            @empty
-            <tr>
-                <td colspan="5" class="text-center text-muted">Belum ada riwayat mutasi stok</td>
-            </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
-    <div class="card-footer">
-        {{ $riwayats->appends(request()->query())->links() }}
-    </div>
 </div>
 @endsection

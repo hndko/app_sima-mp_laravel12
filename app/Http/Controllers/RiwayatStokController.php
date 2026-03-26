@@ -20,7 +20,7 @@ class RiwayatStokController extends Controller
             $query->where('tipe', $request->tipe);
         }
 
-        $riwayats = $query->latest('tanggal')->paginate(20);
+        $riwayats = $query->latest('tanggal')->get();
         $stoks = Stok::all();
 
         return view('backend.riwayat-stok.index', compact('riwayats', 'stoks'));
