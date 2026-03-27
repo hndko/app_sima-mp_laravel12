@@ -36,8 +36,8 @@
                         @error('logo_perusahaan')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted">Format: JPG/PNG/WEBP, maksimal 2MB. Logo tampil di navbar dan laporan
-                            PDF.</small>
+                        <small class="text-muted">Format: JPG/PNG/WEBP, maksimal 2MB. Logo otomatis di-crop tengah dan
+                            di-resize ke 256x256 agar konsisten di navbar dan laporan PDF.</small>
 
                         @if(!empty($settings['logo_perusahaan']))
                         <div class="form-check mt-2">
@@ -78,9 +78,29 @@
                             placeholder="Teks tambahan untuk header laporan PDF">{{ $settings['kop_surat'] }}</textarea>
                         <small class="text-muted">Ditampilkan pada laporan PDF sebagai catatan tambahan.</small>
                     </div>
-                    <button type="submit" class="btn btn-primary"><i class="align-middle" data-feather="save"></i>
-                        Simpan Pengaturan</button>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="align-middle" data-feather="save"></i> Simpan Pengaturan
+                        </button>
+                    </div>
                 </form>
+
+                <hr class="my-4">
+
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                    <div>
+                        <h6 class="mb-1 text-danger">Reset ke Default</h6>
+                        <small class="text-muted">Menghapus seluruh pengaturan aplikasi termasuk logo yang
+                            diunggah.</small>
+                    </div>
+                    <form action="{{ route('settings.reset') }}" method="POST"
+                        onsubmit="return confirm('Reset semua pengaturan ke default? Tindakan ini tidak bisa dibatalkan.');">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="align-middle" data-feather="refresh-ccw"></i> Reset Default
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

@@ -57,7 +57,7 @@ class Setting extends Model
     public static function set($key, $value)
     {
         $saved = static::updateOrCreate(['key' => $key], ['value' => $value]);
-        Cache::forget(self::APP_SETTINGS_CACHE_KEY);
+        static::clearAppSettingsCache();
 
         return $saved;
     }
@@ -68,6 +68,11 @@ class Setting extends Model
             static::updateOrCreate(['key' => $key], ['value' => $value]);
         }
 
+        static::clearAppSettingsCache();
+    }
+
+    public static function clearAppSettingsCache(): void
+    {
         Cache::forget(self::APP_SETTINGS_CACHE_KEY);
     }
 }

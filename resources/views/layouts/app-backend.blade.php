@@ -412,14 +412,14 @@
 						</div>
 						<div class="col-6 text-end">
 							<ul class="list-inline">
-								@if(!empty($appSettings['telepon']))
+								@if(!empty($appSettings['telepon']) && $appSettings['telepon'] !== '-')
 								<li class="list-inline-item">
 									<a class="text-muted"
 										href="tel:{{ preg_replace('/\s+/', '', $appSettings['telepon']) }}">{{
 										$appSettings['telepon'] }}</a>
 								</li>
 								@endif
-								@if(!empty($appSettings['email_cv']))
+								@if(!empty($appSettings['email_cv']) && $appSettings['email_cv'] !== '-')
 								<li class="list-inline-item">
 									<a class="text-muted" href="mailto:{{ $appSettings['email_cv'] }}">{{
 										$appSettings['email_cv'] }}</a>

@@ -66,5 +66,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/log-aktivitas', [ActivityLogController::class, 'index'])->name('log-aktivitas.index');
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
         Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
+        Route::post('/settings/reset', [SettingController::class, 'reset'])->name('settings.reset');
     });
 });
