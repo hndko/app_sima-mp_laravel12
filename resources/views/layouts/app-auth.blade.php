@@ -15,12 +15,13 @@
 	<title>@yield('title', 'Authentication') | {{ config('app.name') }}</title>
 
 	<link href="{{ asset('assets/css/app.css') }}" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+	@stack('styles')
 </head>
 
 <body>
-	<main class="d-flex w-100">
-		<div class="container d-flex flex-column">
+	<main class="d-flex w-100 min-vh-100">
+		<div class="container-fluid p-0 d-flex flex-column">
 			@yield('content')
 		</div>
 	</main>
