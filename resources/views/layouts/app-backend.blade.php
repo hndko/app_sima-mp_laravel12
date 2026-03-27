@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="description" content="{{ config('app.name') }} - Dashboard">
+	<meta name="description" content="{{ config('app.name') }} - Dashboard Manajemen Operasional">
 	<meta name="author" content="Admin">
 	<meta name="keywords" content="aplikasi cv, manajemen proyek, keuangan">
 
@@ -15,10 +15,128 @@
 	<title>@yield('title', 'Dashboard') | {{ config('app.name') }}</title>
 
 	<link href="{{ asset('assets/css/app.css') }}" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+		rel="stylesheet">
 	<link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+	<link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
 
 	<style>
+		:root {
+			--app-accent: #3b7ddd;
+			--app-accent-soft: #e9f1ff;
+			--app-border: #e5eaf2;
+			--app-text-soft: #6b778c;
+		}
+
+		body {
+			font-family: "Manrope", "Segoe UI", sans-serif;
+			background-color: #f4f7fb;
+		}
+
+		.content {
+			padding-top: 1.25rem;
+		}
+
+		.navbar-bg {
+			position: sticky;
+			top: 0;
+			z-index: 1000;
+			backdrop-filter: blur(4px);
+			box-shadow: 0 1px 0 rgba(15, 23, 42, .06);
+		}
+
+		.navbar-company {
+			display: inline-flex;
+			align-items: center;
+			gap: .6rem;
+			margin-left: .85rem;
+		}
+
+		.navbar-company-logo {
+			width: 32px;
+			height: 32px;
+			object-fit: cover;
+			border-radius: 8px;
+			border: 1px solid #d8e2f0;
+			background: #fff;
+		}
+
+		.navbar-company-name {
+			font-size: .9rem;
+			font-weight: 700;
+			color: #344258;
+			max-width: 220px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.sidebar-brand {
+			font-weight: 800;
+			letter-spacing: .2px;
+		}
+
+		.card {
+			border: 1px solid var(--app-border);
+			border-radius: 14px;
+			box-shadow: 0 8px 24px rgba(15, 23, 42, .04);
+		}
+
+		.card .card-header {
+			border-bottom: 1px solid var(--app-border);
+			background: #fff;
+		}
+
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			letter-spacing: -.01em;
+		}
+
+		.text-muted {
+			color: var(--app-text-soft) !important;
+		}
+
+		.btn {
+			border-radius: 10px;
+			font-weight: 600;
+		}
+
+		.btn-primary {
+			box-shadow: 0 8px 18px rgba(59, 125, 221, .22);
+		}
+
+		.form-control,
+		.form-select {
+			border-radius: 10px;
+			border-color: #dbe4f0;
+		}
+
+		.form-control:focus,
+		.form-select:focus {
+			border-color: #9fc0ef;
+			box-shadow: 0 0 0 .2rem rgba(59, 125, 221, .15);
+		}
+
+		.table {
+			--bs-table-striped-bg: #f9fbff;
+		}
+
+		.table>:not(caption)>*>* {
+			vertical-align: middle;
+		}
+
+		.table thead th {
+			font-weight: 700;
+			font-size: .86rem;
+			color: #5b687f;
+			text-transform: uppercase;
+			letter-spacing: .03em;
+		}
+
 		/* Fix DataTables inside AdminKit cards */
 		.card .dataTables_wrapper {
 			padding: 1rem;
@@ -40,24 +158,24 @@
 			display: inline-block !important;
 			padding: 0.375rem 0.75rem !important;
 			margin-left: 2px;
-			border: 1px solid #dee2e6 !important;
+			border: 1px solid #d9e3f1 !important;
 			border-radius: 0.25rem;
 			background: #fff !important;
-			color: #3b7ddd !important;
+			color: var(--app-accent) !important;
 			cursor: pointer;
 			font-size: 0.875rem;
 		}
 
 		.dataTables_wrapper .dataTables_paginate .paginate_button.current,
 		.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-			background: #3b7ddd !important;
-			border-color: #3b7ddd !important;
+			background: var(--app-accent) !important;
+			border-color: var(--app-accent) !important;
 			color: #fff !important;
 		}
 
 		.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-			background: #e9ecef !important;
-			color: #3b7ddd !important;
+			background: var(--app-accent-soft) !important;
+			color: var(--app-accent) !important;
 		}
 
 		.dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
@@ -77,6 +195,32 @@
 		div.dataTables_wrapper div.dataTables_length select {
 			width: auto;
 			display: inline-block;
+		}
+
+		.dataTables_wrapper .dataTables_filter input {
+			border-radius: 10px;
+			border: 1px solid #dbe4f0;
+			padding: .375rem .65rem;
+		}
+
+		@media (max-width: 767.98px) {
+			.content {
+				padding-top: .95rem;
+			}
+
+			.card .dataTables_wrapper {
+				padding: .75rem;
+			}
+
+			div.dataTables_wrapper div.dataTables_filter {
+				text-align: left;
+				margin-top: .5rem;
+			}
+
+			div.dataTables_wrapper div.dataTables_filter input {
+				width: 100%;
+				margin-left: 0;
+			}
 		}
 	</style>
 	@stack('css')
@@ -212,6 +356,12 @@
 					<i class="hamburger align-self-center"></i>
 				</a>
 
+				<a class="navbar-company" href="{{ route('dashboard') }}" aria-label="{{ config('app.name') }}">
+					<img src="{{ $appSettings['logo_url'] }}" alt="Logo {{ config('app.name') }}"
+						class="navbar-company-logo">
+					<span class="navbar-company-name d-none d-md-inline">{{ config('app.name') }}</span>
+				</a>
+
 				<div class="navbar-collapse collapse">
 					<ul class="navbar-nav navbar-align">
 						<li class="nav-item dropdown">
@@ -254,18 +404,27 @@
 					<div class="row text-muted">
 						<div class="col-6 text-start">
 							<p class="mb-0">
-								<a class="text-muted" href="#" target="_blank"><strong>{{ config('app.name')
-										}}</strong></a> &copy; {{ date('Y') }}
+								<strong>{{ config('app.name') }}</strong> &copy; {{ date('Y') }}
 							</p>
+							@if(!empty($appSettings['alamat']))
+							<small class="d-block text-muted mt-1">{{ $appSettings['alamat'] }}</small>
+							@endif
 						</div>
 						<div class="col-6 text-end">
 							<ul class="list-inline">
+								@if(!empty($appSettings['telepon']))
 								<li class="list-inline-item">
-									<a class="text-muted" href="#" target="_blank">Support</a>
+									<a class="text-muted"
+										href="tel:{{ preg_replace('/\s+/', '', $appSettings['telepon']) }}">{{
+										$appSettings['telepon'] }}</a>
 								</li>
+								@endif
+								@if(!empty($appSettings['email_cv']))
 								<li class="list-inline-item">
-									<a class="text-muted" href="#" target="_blank">Help Center</a>
+									<a class="text-muted" href="mailto:{{ $appSettings['email_cv'] }}">{{
+										$appSettings['email_cv'] }}</a>
 								</li>
+								@endif
 							</ul>
 						</div>
 					</div>
@@ -278,21 +437,34 @@
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+	<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+	<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
 	<script>
 		$(document).ready(function() {
-			$('.datatable').DataTable({
+			$('.datatable').each(function() {
+				if ($.fn.DataTable.isDataTable(this)) {
+					return;
+				}
+
+				$(this).DataTable({
 				language: {
 					search: 'Cari:',
 					lengthMenu: 'Tampilkan _MENU_ data',
 					info: 'Menampilkan _START_ - _END_ dari _TOTAL_ data',
 					infoEmpty: 'Tidak ada data',
 					zeroRecords: 'Data tidak ditemukan',
+					emptyTable: 'Belum ada data tersedia',
 					paginate: { previous: '&laquo;', next: '&raquo;' }
 				},
 				pageLength: 10,
+				lengthMenu: [10, 25, 50, 100],
 				order: [],
+				autoWidth: false,
+				responsive: true,
 				dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>'
+				});
 			});
+
 		});
 	</script>
 	@stack('js')

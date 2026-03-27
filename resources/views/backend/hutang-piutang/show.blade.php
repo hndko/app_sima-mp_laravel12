@@ -8,9 +8,11 @@
         <h1 class="h3 mb-3"><strong>Rincian</strong> Hutang Piutang</h1>
     </div>
     <div class="col-6 text-end">
-        <a href="{{ route('laporan.hutang-piutang.pdf', $karyawan->id) }}" class="btn btn-danger"><i class="align-middle" data-feather="file-text"></i> Export PDF</a>
+        <a href="{{ route('laporan.hutang-piutang.pdf', ['karyawan' => $karyawan->id]) }}" class="btn btn-danger"><i
+                class="align-middle" data-feather="file-text"></i> Export PDF</a>
         <a href="{{ route('hutang-piutang.index') }}" class="btn btn-secondary">Kembali ke Rekap</a>
-        <a href="{{ route('hutang-piutang.create', ['karyawan_id' => $karyawan->id]) }}" class="btn btn-primary">Catat Transaksi</a>
+        <a href="{{ route('hutang-piutang.create', ['karyawan_id' => $karyawan->id]) }}" class="btn btn-primary">Catat
+            Transaksi</a>
     </div>
 </div>
 
@@ -56,12 +58,11 @@
                     Rp {{ number_format(abs($saldo), 0, ',', '.') }}
                 </h4>
                 @if($saldo > 0)
-                    <span class="badge bg-danger">Masih Hutang</span>
-                @elseif($saldo < 0)
-                    <span class="badge bg-success">Lebih Bayar</span>
-                @else
+                <span class="badge bg-danger">Masih Hutang</span>
+                @elseif($saldo < 0) <span class="badge bg-success">Lebih Bayar</span>
+                    @else
                     <span class="badge bg-secondary">Lunas</span>
-                @endif
+                    @endif
             </div>
         </div>
     </div>
@@ -88,18 +89,19 @@
                 <td>{{ \Carbon\Carbon::parse($r->tanggal)->format('d/m/Y') }}</td>
                 <td class="text-danger">
                     @if($r->pengambilan > 0)
-                        Rp {{ number_format($r->pengambilan, 0, ',', '.') }}
+                    Rp {{ number_format($r->pengambilan, 0, ',', '.') }}
                     @else - @endif
                 </td>
                 <td class="text-success">
                     @if($r->upah > 0)
-                        Rp {{ number_format($r->upah, 0, ',', '.') }}
+                    Rp {{ number_format($r->upah, 0, ',', '.') }}
                     @else - @endif
                 </td>
                 <td>{{ $r->keterangan ?? '-' }}</td>
                 <td>
                     <a href="{{ route('hutang-piutang.edit', $r->id) }}" class="btn btn-sm btn-info">Edit</a>
-                    <form action="{{ route('hutang-piutang.destroy', $r->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus transaksi ini?');">
+                    <form action="{{ route('hutang-piutang.destroy', $r->id) }}" method="POST" class="d-inline"
+                        onsubmit="return confirm('Hapus transaksi ini?');">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
